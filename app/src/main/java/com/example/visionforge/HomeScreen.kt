@@ -9,11 +9,13 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.repository.ChatRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class HomeScreen : AppCompatActivity() {
+    private val chatRepository = ChatRepository()
     private lateinit var editTextTopic: EditText
     private lateinit var buttonGenerate: Button
     private lateinit var textViewGeneratedContent: TextView
