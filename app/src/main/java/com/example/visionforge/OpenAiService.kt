@@ -11,7 +11,7 @@ data class GenerateResponse(val choices: List<Choice>)
 data class Choice(val text: String)
 
 interface OpenAIService {
-    @Headers("Authorization: Bearer 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")
+    @Headers("Authorization: Bearer API_KEY")
     @POST("v1/completions")
     fun generateContent(@Body request: GenerateRequest): Call<GenerateResponse>
 }

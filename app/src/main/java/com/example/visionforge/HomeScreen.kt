@@ -1,6 +1,6 @@
 package com.example.visionforge
 
-// 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
+
 
 import android.os.Bundle
 import android.util.Log
@@ -9,11 +9,13 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.repository.ChatRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class HomeScreen : AppCompatActivity() {
+    private val chatRepository = ChatRepository()
     private lateinit var editTextTopic: EditText
     private lateinit var buttonGenerate: Button
     private lateinit var textViewGeneratedContent: TextView
