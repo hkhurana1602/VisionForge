@@ -17,7 +17,7 @@ class ChatRepository {
 
     private val apiClient = ApiClient.getInstance()
 
-    fun createChatCompletion(message: String) {
+    fun createChatCompletion(message: String, onResult: (String?) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val chatRequest = ChatRequest(
@@ -34,29 +34,35 @@ class ChatRepository {
                     CHAT_GPT_MODEL
                 )
                 apiClient.createChatCompletion(chatRequest).enqueue(object : Callback<ChatResponse>{
-                    override fun onResponse(
-                        call: Call<ChatResponse>,
-                        response: Response<ChatResponse>
-                    ) {
-                        val code = response.code()
-                        if(code == 200){
+                    override fun onResponse(call: Call<ChatResponse>, response: Response<ChatResponse>) {
+                        if (response.isSuccessful) {
+                            val responseBody = response.body()
+                            Log.d("API Response", "Response: $responseBody")
 
-                            response.body()?.choices?.get(0)?.message?.let {
-                                Log.d("message", it.toString())
+                            // Check if choices list and message content are not null
+                            val content = responseBody?.choices?.get(0)?.message?.content
+                            if (content != null) {
+                                onResult(content) // Pass the content to the callback
+                            } else {
+                                Log.e("API Response", "No content found in the response")
+                                onResult(null) // No content in the response
                             }
-                        } else{
-                            Log.d("error", response.errorBody().toString())
+                        } else {
+                            Log.e("API Error", "Error: ${response.message()}, Code: ${response.code()}")
+                            onResult(null) // If error, return null
                         }
                     }
 
                     override fun onFailure(call: Call<ChatResponse>, t: Throwable) {
-                        t.printStackTrace()
+                        Log.e("API Error", "Error: ${t.message}")
+                        onResult(null) // If failure, return null
                     }
 
                 })
 
             } catch (e: Exception) {
                 e.printStackTrace()
+                onResult(null)
             }
         }
     }
