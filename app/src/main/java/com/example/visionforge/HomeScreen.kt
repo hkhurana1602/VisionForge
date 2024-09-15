@@ -46,36 +46,44 @@ class HomeScreen : AppCompatActivity() {
 //        // TODO: Call the API and display the generated content
 //    }
 
+//    private fun generateContent(topic: String) {
+//        val request = GenerateRequest(prompt = topic, max_tokens = 100)
+//
+//        RetrofitClient.instance.generateContent(request).enqueue(object :
+//            Callback<GenerateResponse> {
+//            override fun onResponse(
+//                call: Call<GenerateResponse>,
+//                response: Response<GenerateResponse>
+//            ) {
+//                if (response.isSuccessful) {
+//                    val content = response.body()?.choices?.get(0)?.text
+//                    textViewGeneratedContent.text = content ?: "No content generated."
+//                } else {
+//                    Toast.makeText(
+//                        this@HomeScreen,
+//                        "API Error: ${response.message()}",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//
+//            }
+//                override fun onFailure(call: Call<GenerateResponse>, t: Throwable) {
+//                    //hideLoading()
+//                    Toast.makeText(
+//                        this@HomeScreen,
+//                        "Network Error: ${t.message}",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//            })
+//        }
+
     private fun generateContent(topic: String) {
-        val request = GenerateRequest(prompt = topic, max_tokens = 100)
-
-        RetrofitClient.instance.generateContent(request).enqueue(object :
-            Callback<GenerateResponse> {
-            override fun onResponse(
-                call: Call<GenerateResponse>,
-                response: Response<GenerateResponse>
-            ) {
-                if (response.isSuccessful) {
-                    val content = response.body()?.choices?.get(0)?.text
-                    textViewGeneratedContent.text = content ?: "No content generated."
-                } else {
-                    Toast.makeText(
-                        this@HomeScreen,
-                        "API Error: ${response.message()}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
+        chatRepository.createChatCompletion(topic) { responseMessage ->
+            runOnUiThread {
+                textViewGeneratedContent.text = responseMessage ?: "No content generated."
             }
-                override fun onFailure(call: Call<GenerateResponse>, t: Throwable) {
-                    //hideLoading()
-                    Toast.makeText(
-                        this@HomeScreen,
-                        "Network Error: ${t.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
         }
+    }
     }
 
