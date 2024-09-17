@@ -13,8 +13,13 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        val apiKey: String = project.findProperty("API_KEY") as String? ?: ""
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
@@ -49,4 +54,7 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
+    // other imports...
+    // other imports...
+    implementation(libs.generativeai)
 }
