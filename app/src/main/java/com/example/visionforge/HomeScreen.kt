@@ -3,19 +3,18 @@ package com.example.visionforge
 
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.repository.ChatRepository
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.utils.API_KEY
+import com.google.ai.client.generativeai.GenerativeModel
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+
 
 class HomeScreen : AppCompatActivity() {
-    private val chatRepository = ChatRepository()
     private lateinit var editTextTopic: EditText
     private lateinit var buttonGenerate: Button
     private lateinit var textViewGeneratedContent: TextView
@@ -79,11 +78,27 @@ class HomeScreen : AppCompatActivity() {
 //        }
 
     private fun generateContent(topic: String) {
-        chatRepository.createChatCompletion(topic) { responseMessage ->
-            runOnUiThread {
-                textViewGeneratedContent.text = responseMessage ?: "No content generated."
-            }
+        val generativeModel =
+            GenerativeModel(
+                // Specify a Gemini model appropriate for your use case
+                modelName = "gemini-1.5-flash",
+                // Access your API key as a Build Configuration variable (see "Set up your API key" above)
+                apiKey = API_KEY
+            )
+
+        MainScope().launch {
+            val response = generativeModel.generateContent(topic)
+            textViewGeneratedContent.text = response.text
+            print(response.text)
         }
+
     }
+//    private fun generateContent(topic: String) {
+//        chatRepository.createChatCompletion(topic) { responseMessage ->
+//            runOnUiThread {
+//                textViewGeneratedContent.text = responseMessage ?: "No content generated."
+//            }
+//        }
+//    }
     }
 
